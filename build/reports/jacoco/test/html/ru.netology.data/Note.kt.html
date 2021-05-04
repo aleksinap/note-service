@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Note.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">note-service</a> &gt; <a href="index.source.html" class="el_package">ru.netology.data</a> &gt; <span class="el_source">Note.kt</span></div><h1>Note.kt</h1><pre class="source lang-java linenums">package ru.netology.data
+
+<span class="fc" id="L3">data class Note(</span>
+    //    РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РјРµС‚РєРё
+<span class="fc" id="L5">    val id: Int,</span>
+    //    РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІР»Р°РґРµР»СЊС†Р° Р·Р°РјРµС‚РєРё
+<span class="fc" id="L7">    val ownerId: Int,</span>
+    //    Р·Р°РіРѕР»РѕРІРѕРє Р·Р°РјРµС‚РєРё
+<span class="nc" id="L9">    val title: String,</span>
+    //    С‚РµРєСЃС‚ Р·Р°РјРµС‚РєРё
+<span class="nc" id="L11">    val text: String,</span>
+    //    РґР°С‚Р° СЃРѕР·РґР°РЅРёСЏ Р·Р°РјРµС‚РєРё РІ С„РѕСЂРјР°С‚Рµ Unixtime
+<span class="nc" id="L13">    val date: Int,</span>
+    //    РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
+<span class="pc" id="L15">    var comments: Int,</span>
+    //    РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ (С‚РѕР»СЊРєРѕ РїСЂРё Р·Р°РїСЂРѕСЃРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ Р·Р°РјРµС‚РєРµ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)
+<span class="nc" id="L17">    val readComments: Int,</span>
+    //    URL СЃС‚СЂР°РЅРёС†С‹ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Р·Р°РјРµС‚РєРё
+<span class="nc" id="L19">    val viewUrl: String</span>
+)
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NoteService.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">note-service</a> &gt; <a href="index.source.html" class="el_package">ru.netology.noteservice</a> &gt; <span class="el_source">NoteService.kt</span></div><h1>NoteService.kt</h1><pre class="source lang-java linenums">package ru.netology.noteservice
+
+import ru.netology.data.Comment
+import ru.netology.data.GenericPair
+import ru.netology.data.Note
+import java.lang.RuntimeException
+
+<span class="fc" id="L8">class NoteNotFoundException(message: String) : RuntimeException(message)</span>
+<span class="fc" id="L9">class UserNotFoundException(message: String) : RuntimeException(message)</span>
+<span class="fc" id="L10">class AddingCommentException(message: String) : RuntimeException(message)</span>
+<span class="fc" id="L11">class GettingCommentsException(message: String) : RuntimeException(message)</span>
+<span class="fc" id="L12">class NoCommentsException(message: String) : RuntimeException(message)</span>
+
+<span class="fc" id="L14">class NoteService {</span>
+    private var pairs: MutableList&lt;GenericPair&lt;Note,MutableList&lt;Comment&gt;&gt;&gt; =
+<span class="fc" id="L16">        emptyList&lt;GenericPair&lt;Note,MutableList&lt;Comment&gt;&gt;&gt;().toMutableList()</span>
+
+    //  РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ Р·Р°РјРµС‚РєСѓ Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+    fun add(
+        title: String,
+        text: String,
+<span class="fc" id="L22">        privacyView: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
+<span class="fc" id="L23">        privacyComment: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
+    ) : Int {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if(pairs.isEmpty()){</span>
+<span class="fc" id="L26">            pairs.add(GenericPair(Note(1,1, title, text, 123456,0,0,&quot;https://netology.ru&quot;), emptyList&lt;Comment&gt;().toMutableList()))</span>
+        } else {
+<span class="fc" id="L28">            pairs.add(GenericPair(Note(pairs.last().first.id + 1,1, title, text, 123456,0,0,&quot;https://netology.ru&quot;), emptyList&lt;Comment&gt;().toMutableList()))</span>
+        }
+<span class="fc" id="L30">        return pairs.last().first.id</span>
+    }
+
+    //  Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
+    fun createComment(
+        noteId: Int,
+        ownerId: Int,
+        replyTo: Int?,
+        message: String,
+        guid: String,
+    ) : Int{
+<span class="fc bfc" id="L41" title="All 4 branches covered.">        if(pairs.isNotEmpty()){</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            for(pair in pairs){</span>
+<span class="fc bfc" id="L43" title="All 4 branches covered.">                if(pair.first.id == noteId &amp;&amp; pair.first.ownerId == ownerId){</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">                    if(pair.second.isEmpty()){</span>
+<span class="fc" id="L45">                        pair.second.add(Comment(1,1,noteId,ownerId,123467,message, replyTo))</span>
+                    } else {
+<span class="fc" id="L47">                        pair.second.add(Comment(pair.second.last().cid + 1,1,noteId,ownerId,123467,message, replyTo))</span>
+                    }
+<span class="fc" id="L49">                    pair.first = pair.first.copy(comments = pair.first.comments + 1)</span>
+<span class="fc" id="L50">                    return pair.second.last().cid</span>
+                }
+
+            }
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">            for(pair in pairs){</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                if(pair.first.id != noteId){</span>
+<span class="fc" id="L56">                    throw NoteNotFoundException(&quot;Р—Р°РјРµС‚РєР° СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+                } else {
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">                    if(pair.first.ownerId != ownerId) {</span>
+<span class="fc" id="L59">                        throw UserNotFoundException(&quot;РџРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L64">        throw AddingCommentException(&quot;РџРѕРїС‹С‚РєР° РґРѕР±Р°РІРёС‚СЊ РєРѕРјРјРµС‚Р°СЂРёР№ Рє РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ Р·Р°РјРµС‚РєРµ&quot;)</span>
+        return pairs.last().second.last().cid
+    }
+
+    //    //  РЈРґР°Р»СЏРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+//    fun delete(noteId: Int) : Boolean {
+//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СѓРґР°Р»РµРЅРёСЏ Р·Р°РјРµС‚РєРё.&quot;)
+//        return true
+//    }
+//
+//    //    РЈРґР°Р»СЏРµС‚ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
+//    fun deleteComment(commentId: Int, ownerId: Int) : Boolean {
+//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СѓРґР°Р»РµРЅРёСЏ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє Р·Р°РјРµС‚РєРµ.&quot;)
+//        return true
+//    }
+//
+//    //  Р РµРґР°РєС‚РёСЂСѓРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+//    fun edit(
+//        noteId: Int,
+//        title: String,
+//        text: String,
+//        privacyView: List&lt;String&gt; = listOf(&quot;all&quot;),
+//        privacyComment: List&lt;String&gt; = listOf(&quot;all&quot;),
+//    ) : Boolean {
+//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ Р·Р°РјРµС‚РєРё.&quot;)
+//        return true
+//    }
+//
+//    //  Р РµРґР°РєС‚РёСЂСѓРµС‚ СѓРєР°Р·Р°РЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Сѓ Р·Р°РјРµС‚РєРё.
+//    fun editComment(commentId: Int, ownerId: Int, message: String) : Boolean {
+//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє Р·Р°РјРµС‚РєРµ.&quot;)
+//        return true
+//    }
+//
+//    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє, СЃРѕР·РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.
+//    fun get(noteIds: List&lt;Int&gt;, userId: Int, offset: Int = 0, count: Int = 20, sort: Int = 0): MutableList&lt;GenericPair&lt;Note, MutableList&lt;Comment&gt;?&gt;&gt; {
+//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ РІРѕР·РІСЂР°С‰РµРЅРёСЏ СЃРїРёСЃРєР° Р·Р°РјРµС‚РѕРє, СЃРѕР·РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.&quot;)
+//        return pairs
+//    }
+//
+//    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РјРµС‚РєСѓ РїРѕ РµС‘ id.
+//    fun getById(noteId: Int, ownerId: Int, needWiki: Boolean = false): MutableList&lt;GenericPair&lt;Note, MutableList&lt;Comment&gt;?&gt;&gt; {
+//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ РІРѕР·РІСЂР°С‰РµРЅРёСЏ Р·Р°РјРµС‚РєРё РїРѕ РµС‘ id.&quot;)
+//        return pairs
+//    }
+//
+//    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє Р·Р°РјРµС‚РєРµ.
+<span class="fc" id="L111">    fun getComments(noteId: Int, ownerId: Int, sort: Int = 0, offset: Int = 0, count: Int = 20): MutableList&lt;Comment&gt; {</span>
+<span class="fc" id="L112">        var x: MutableList&lt;Comment&gt;</span>
+<span class="fc bfc" id="L113" title="All 4 branches covered.">        if(pairs.isNotEmpty()){</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            for(pair in pairs){</span>
+<span class="fc bfc" id="L115" title="All 4 branches covered.">                if(pair.first.id == noteId &amp;&amp; pair.first.ownerId == ownerId){</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">                    if(pair.second.isEmpty()){</span>
+<span class="fc" id="L117">                        throw NoCommentsException(&quot;РЈ Р·Р°РјРµС‚РєРё СЃ С‚Р°РєРёРј id РЅРµС‚ РєРѕРјРјРµС‚Р°СЂРёРµРІ&quot;)</span>
+                    } else {
+<span class="fc" id="L119">                        x = pair.second</span>
+                    }
+<span class="fc" id="L121">                    return x</span>
+                }
+            }
+
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            for(pair in pairs){</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                if(pair.first.id != noteId){</span>
+<span class="fc" id="L127">                    throw NoteNotFoundException(&quot;Р—Р°РјРµС‚РєР° СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+                } else {
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">                    if(pair.first.ownerId != ownerId) {</span>
+<span class="fc" id="L130">                        throw UserNotFoundException(&quot;РџРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L135">        throw GettingCommentsException(&quot;РџРѕРїС‹С‚РєР° РїРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РєРѕРјРјРµС‚Р°СЂРёРµРІ Рє РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ Р·Р°РјРµС‚РєРµ&quot;)</span>
+        return x
+    }
+//
+//    //  Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРґР°Р»С‘РЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№.
+//    fun restoreComment(commentId: Int, ownerId: Int): Boolean {
+//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ СѓРґР°Р»С‘РЅРЅРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє Р·Р°РјРµС‚РєРµ.&quot;)
+//        return true
+//    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

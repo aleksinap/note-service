@@ -10,24 +10,27 @@ import java.lang.RuntimeException
 <span class="fc" id="L10">class AddingCommentException(message: String) : RuntimeException(message)</span>
 <span class="fc" id="L11">class GettingCommentsException(message: String) : RuntimeException(message)</span>
 <span class="fc" id="L12">class NoCommentsException(message: String) : RuntimeException(message)</span>
+<span class="fc" id="L13">class GettingNotesException(message: String) : RuntimeException(message)</span>
 
-<span class="fc" id="L14">class NoteService {</span>
-    private var pairs: MutableList&lt;GenericPair&lt;Note,MutableList&lt;Comment&gt;&gt;&gt; =
-<span class="fc" id="L16">        emptyList&lt;GenericPair&lt;Note,MutableList&lt;Comment&gt;&gt;&gt;().toMutableList()</span>
+<span class="fc" id="L15">class NoteService {</span>
+<span class="fc" id="L16">    private var pairs = mutableListOf&lt;GenericPair&lt;Note,MutableList&lt;Comment&gt;&gt;&gt;()</span>
+<span class="fc" id="L17">    private var guids = mutableListOf&lt;String&gt;()</span>
+<span class="fc" id="L18">    private var deletedPairs = mutableListOf&lt;GenericPair&lt;Note,MutableList&lt;Comment&gt;&gt;&gt;()</span>
+<span class="fc" id="L19">    private var deletedComments = mutableListOf&lt;Comment&gt;()</span>
 
     //  РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ Р·Р°РјРµС‚РєСѓ Сѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
     fun add(
         title: String,
         text: String,
-<span class="fc" id="L22">        privacyView: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
-<span class="fc" id="L23">        privacyComment: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
+<span class="fc" id="L25">        privacyView: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
+<span class="fc" id="L26">        privacyComment: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
     ) : Int {
-<span class="fc bfc" id="L25" title="All 2 branches covered.">        if(pairs.isEmpty()){</span>
-<span class="fc" id="L26">            pairs.add(GenericPair(Note(1,1, title, text, 123456,0,0,&quot;https://netology.ru&quot;), emptyList&lt;Comment&gt;().toMutableList()))</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(pairs.isEmpty()){</span>
+<span class="fc" id="L29">            pairs.add(GenericPair(Note(1,1, title, text, 123456,0,0,&quot;https://netology.ru&quot;), mutableListOf()))</span>
         } else {
-<span class="fc" id="L28">            pairs.add(GenericPair(Note(pairs.last().first.id + 1,1, title, text, 123456,0,0,&quot;https://netology.ru&quot;), emptyList&lt;Comment&gt;().toMutableList()))</span>
+<span class="fc" id="L31">            pairs.add(GenericPair(Note(pairs.last().first.id + 1,1, title, text, 123456,0,0,&quot;https://netology.ru&quot;), mutableListOf()))</span>
         }
-<span class="fc" id="L30">        return pairs.last().first.id</span>
+<span class="fc" id="L33">        return pairs.last().first.id</span>
     }
 
     //  Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
@@ -36,110 +39,190 @@ import java.lang.RuntimeException
         ownerId: Int,
         replyTo: Int?,
         message: String,
-        guid: String,
+        guid: String
     ) : Int{
-<span class="fc bfc" id="L41" title="All 4 branches covered.">        if(pairs.isNotEmpty()){</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">            for(pair in pairs){</span>
-<span class="fc bfc" id="L43" title="All 4 branches covered.">                if(pair.first.id == noteId &amp;&amp; pair.first.ownerId == ownerId){</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">                    if(pair.second.isEmpty()){</span>
-<span class="fc" id="L45">                        pair.second.add(Comment(1,1,noteId,ownerId,123467,message, replyTo))</span>
+<span class="fc bfc" id="L44" title="All 4 branches covered.">        if(pairs.isNotEmpty()){</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            for(pair in pairs){</span>
+<span class="fc bfc" id="L46" title="All 4 branches covered.">                if(pair.first.id == noteId &amp;&amp; pair.first.ownerId == ownerId){</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                    if(pair.second.isEmpty()){</span>
+<span class="fc" id="L48">                        pair.second.add(Comment(1,1,noteId,ownerId,123467,message, replyTo))</span>
                     } else {
-<span class="fc" id="L47">                        pair.second.add(Comment(pair.second.last().cid + 1,1,noteId,ownerId,123467,message, replyTo))</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">                        for(g in guids){</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">                            if(g == guid) throw AddingCommentException(&quot;РўР°РєРѕР№ РєРѕРјРјРµС‚Р°СЂРёР№ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+                        }
+<span class="fc" id="L53">                        pair.second.add(Comment(pair.second.last().cid + 1,1,noteId,ownerId,123467,message, replyTo))</span>
                     }
-<span class="fc" id="L49">                    pair.first = pair.first.copy(comments = pair.first.comments + 1)</span>
-<span class="fc" id="L50">                    return pair.second.last().cid</span>
-                }
-
-            }
-<span class="pc bpc" id="L54" title="1 of 2 branches missed.">            for(pair in pairs){</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">                if(pair.first.id != noteId){</span>
-<span class="fc" id="L56">                    throw NoteNotFoundException(&quot;Р—Р°РјРµС‚РєР° СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
-                } else {
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">                    if(pair.first.ownerId != ownerId) {</span>
-<span class="fc" id="L59">                        throw UserNotFoundException(&quot;РџРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
-                    }
+<span class="fc" id="L55">                    pair.first = pair.first.copy(comments = pair.first.comments + 1)</span>
+<span class="fc" id="L56">                    guids.add(guid)</span>
+<span class="fc" id="L57">                    return pair.second.last().cid</span>
                 }
             }
+<span class="fc" id="L60">            throwUserNotFoundException(ownerId)</span>
+<span class="nc" id="L61">            throwNoteNotFoundException(noteId)</span>
         }
-<span class="fc" id="L64">        throw AddingCommentException(&quot;РџРѕРїС‹С‚РєР° РґРѕР±Р°РІРёС‚СЊ РєРѕРјРјРµС‚Р°СЂРёР№ Рє РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ Р·Р°РјРµС‚РєРµ&quot;)</span>
+<span class="fc" id="L63">        throw AddingCommentException(&quot;РџРѕРїС‹С‚РєР° РґРѕР±Р°РІРёС‚СЊ РєРѕРјРјРµС‚Р°СЂРёР№ Рє РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ Р·Р°РјРµС‚РєРµ&quot;)</span>
         return pairs.last().second.last().cid
     }
 
-    //    //  РЈРґР°Р»СЏРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
-//    fun delete(noteId: Int) : Boolean {
-//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СѓРґР°Р»РµРЅРёСЏ Р·Р°РјРµС‚РєРё.&quot;)
-//        return true
-//    }
-//
-//    //    РЈРґР°Р»СЏРµС‚ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
-//    fun deleteComment(commentId: Int, ownerId: Int) : Boolean {
-//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СѓРґР°Р»РµРЅРёСЏ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє Р·Р°РјРµС‚РєРµ.&quot;)
-//        return true
-//    }
-//
-//    //  Р РµРґР°РєС‚РёСЂСѓРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
-//    fun edit(
-//        noteId: Int,
-//        title: String,
-//        text: String,
-//        privacyView: List&lt;String&gt; = listOf(&quot;all&quot;),
-//        privacyComment: List&lt;String&gt; = listOf(&quot;all&quot;),
-//    ) : Boolean {
-//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ Р·Р°РјРµС‚РєРё.&quot;)
-//        return true
-//    }
-//
-//    //  Р РµРґР°РєС‚РёСЂСѓРµС‚ СѓРєР°Р·Р°РЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Сѓ Р·Р°РјРµС‚РєРё.
-//    fun editComment(commentId: Int, ownerId: Int, message: String) : Boolean {
-//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє Р·Р°РјРµС‚РєРµ.&quot;)
-//        return true
-//    }
-//
-//    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє, СЃРѕР·РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.
-//    fun get(noteIds: List&lt;Int&gt;, userId: Int, offset: Int = 0, count: Int = 20, sort: Int = 0): MutableList&lt;GenericPair&lt;Note, MutableList&lt;Comment&gt;?&gt;&gt; {
-//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ РІРѕР·РІСЂР°С‰РµРЅРёСЏ СЃРїРёСЃРєР° Р·Р°РјРµС‚РѕРє, СЃРѕР·РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.&quot;)
-//        return pairs
-//    }
-//
-//    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РјРµС‚РєСѓ РїРѕ РµС‘ id.
-//    fun getById(noteId: Int, ownerId: Int, needWiki: Boolean = false): MutableList&lt;GenericPair&lt;Note, MutableList&lt;Comment&gt;?&gt;&gt; {
-//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ РІРѕР·РІСЂР°С‰РµРЅРёСЏ Р·Р°РјРµС‚РєРё РїРѕ РµС‘ id.&quot;)
-//        return pairs
-//    }
-//
-//    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє Р·Р°РјРµС‚РєРµ.
-<span class="fc" id="L111">    fun getComments(noteId: Int, ownerId: Int, sort: Int = 0, offset: Int = 0, count: Int = 20): MutableList&lt;Comment&gt; {</span>
-<span class="fc" id="L112">        var x: MutableList&lt;Comment&gt;</span>
-<span class="fc bfc" id="L113" title="All 4 branches covered.">        if(pairs.isNotEmpty()){</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">            for(pair in pairs){</span>
-<span class="fc bfc" id="L115" title="All 4 branches covered.">                if(pair.first.id == noteId &amp;&amp; pair.first.ownerId == ownerId){</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">                    if(pair.second.isEmpty()){</span>
-<span class="fc" id="L117">                        throw NoCommentsException(&quot;РЈ Р·Р°РјРµС‚РєРё СЃ С‚Р°РєРёРј id РЅРµС‚ РєРѕРјРјРµС‚Р°СЂРёРµРІ&quot;)</span>
-                    } else {
-<span class="fc" id="L119">                        x = pair.second</span>
-                    }
-<span class="fc" id="L121">                    return x</span>
+    //  РЈРґР°Р»СЏРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+    fun delete(noteId: Int) : Boolean {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        for(pair in pairs){</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            if(pair.first.id == noteId){</span>
+<span class="fc" id="L71">                deletedPairs.add(pair)</span>
+<span class="fc" id="L72">                pairs.remove(pair)</span>
+<span class="fc" id="L73">                return true</span>
+            }
+        }
+<span class="fc" id="L76">        return false</span>
+    }
+
+    //    РЈРґР°Р»СЏРµС‚ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РјРµС‚РєРµ.
+    fun deleteComment(commentId: Int, ownerId: Int) : Boolean {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        for(i in pairs.indices){</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            for(j in pairs[i].second.indices) {</span>
+<span class="pc bpc" id="L83" title="1 of 4 branches missed.">                if(pairs[i].second[j].ownerId == ownerId &amp;&amp; pairs[i].second[j].cid == commentId){</span>
+<span class="fc" id="L84">                    deletedComments.add(pairs[i].second[j])</span>
+<span class="fc" id="L85">                    pairs[i].second.remove(pairs[i].second[j])</span>
+<span class="fc" id="L86">                    return true</span>
                 }
             }
+        }
+<span class="fc" id="L90">        throwUserNotFoundException(ownerId)</span>
+<span class="nc" id="L91">        throwNoCommentsException(commentId)</span>
+<span class="nc" id="L92">        return false</span>
+    }
 
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            for(pair in pairs){</span>
-<span class="fc bfc" id="L126" title="All 2 branches covered.">                if(pair.first.id != noteId){</span>
-<span class="fc" id="L127">                    throw NoteNotFoundException(&quot;Р—Р°РјРµС‚РєР° СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
-                } else {
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">                    if(pair.first.ownerId != ownerId) {</span>
-<span class="fc" id="L130">                        throw UserNotFoundException(&quot;РџРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+    //  Р РµРґР°РєС‚РёСЂСѓРµС‚ Р·Р°РјРµС‚РєСѓ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.
+    fun edit(
+        noteId: Int,
+        title: String,
+        text: String,
+<span class="fc" id="L100">        privacyView: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
+<span class="fc" id="L101">        privacyComment: List&lt;String&gt; = listOf(&quot;all&quot;),</span>
+    ) : Boolean {
+<span class="fc bfc" id="L103" title="All 4 branches covered.">        if(pairs.isNotEmpty()){</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">            for(pair in pairs){</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">                if(pair.first.id == noteId){</span>
+<span class="fc" id="L106">                    pair.first = pair.first.copy(title = title, text = text)</span>
+<span class="fc" id="L107">                    return true</span>
+                }
+            }
+<span class="nc" id="L110">            throwNoteNotFoundException(noteId)</span>
+        }
+<span class="nc" id="L112">        throwNoteNotFoundException(noteId)</span>
+<span class="nc" id="L113">        return false</span>
+    }
+
+    //  Р РµРґР°РєС‚РёСЂСѓРµС‚ СѓРєР°Р·Р°РЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Сѓ Р·Р°РјРµС‚РєРё.
+    fun editComment(commentId: Int, ownerId: Int, message: String) : Boolean {
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        for(i in pairs.indices){</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">            for(j in pairs[i].second.indices) {</span>
+<span class="fc bfc" id="L120" title="All 4 branches covered.">                if(pairs[i].second[j].ownerId == ownerId &amp;&amp; pairs[i].second[j].cid == commentId){</span>
+<span class="fc" id="L121">                    pairs[i].second[j] = pairs[i].second[j].copy(message = message)</span>
+<span class="fc" id="L122">                    return true</span>
+                }
+            }
+        }
+<span class="fc" id="L126">        throwUserNotFoundException(ownerId)</span>
+<span class="nc" id="L127">        throwNoCommentsException(commentId)</span>
+<span class="nc" id="L128">        return false</span>
+    }
+
+    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє, СЃРѕР·РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.
+<span class="fc" id="L132">    fun get(noteIds: List&lt;Int&gt;, userId: Int, offset: Int = 0, count: Int = 20, sort: Int = 0): MutableList&lt;Note&gt; {</span>
+<span class="fc" id="L133">        var list = mutableListOf&lt;Note&gt;()</span>
+
+<span class="fc bfc" id="L135" title="All 4 branches covered.">        if(pairs.isNotEmpty()){</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">            for(i in noteIds.indices){</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">                for(j in pairs.indices) {</span>
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">                    if(pairs[j].first.ownerId == userId &amp;&amp; pairs[j].first.id == noteIds[i]) {</span>
+<span class="fc" id="L139">                        list.add(pairs[j].first)</span>
+<span class="fc" id="L140">                        break</span>
+                    }
+                }
+            }
+<span class="fc" id="L144">            throwUserNotFoundException(userId)</span>
+<span class="fc" id="L145">            noteIds.forEach { throwNoteNotFoundException(it) }</span>
+<span class="fc" id="L146">            return list</span>
+        }
+<span class="fc" id="L148">        throw GettingNotesException(&quot;РЎРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє РїСѓСЃС‚!&quot;)</span>
+        return list
+    }
+
+    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РјРµС‚РєСѓ РїРѕ РµС‘ id.
+<span class="fc" id="L153">    fun getById(noteId: Int, ownerId: Int, needWiki: Boolean = false): MutableList&lt;Note&gt; {</span>
+<span class="fc" id="L154">        return get(listOf(noteId), ownerId)</span>
+    }
+
+    //  Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє Р·Р°РјРµС‚РєРµ.
+    fun getComments(
+        noteId: Int,
+        ownerId: Int,
+<span class="fc" id="L161">        sort: Int = 0,</span>
+<span class="fc" id="L162">        offset: Int = 0,</span>
+<span class="fc" id="L163">        count: Int = 20</span>
+    ): MutableList&lt;Comment&gt; {
+<span class="fc" id="L165">        var x: MutableList&lt;Comment&gt;</span>
+<span class="fc bfc" id="L166" title="All 4 branches covered.">        if (pairs.isNotEmpty()) {</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">            for (pair in pairs) {</span>
+<span class="fc bfc" id="L168" title="All 4 branches covered.">                if (pair.first.id == noteId &amp;&amp; pair.first.ownerId == ownerId) {</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">                    if (pair.second.isEmpty()) {</span>
+<span class="fc" id="L170">                        throw NoCommentsException(&quot;РЈ Р·Р°РјРµС‚РєРё СЃ С‚Р°РєРёРј id РЅРµС‚ РєРѕРјРјРµС‚Р°СЂРёРµРІ&quot;)</span>
+                    } else {
+<span class="fc" id="L172">                        x = pair.second</span>
+                    }
+<span class="fc" id="L174">                    return x</span>
+                }
+            }
+<span class="fc" id="L177">            throwUserNotFoundException(ownerId)</span>
+<span class="nc" id="L178">            throwNoteNotFoundException(noteId)</span>
+        }
+<span class="fc" id="L180">        throw GettingCommentsException(&quot;РџРѕРїС‹С‚РєР° РїРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РєРѕРјРјРµС‚Р°СЂРёРµРІ Рє РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ Р·Р°РјРµС‚РєРµ&quot;)</span>
+        return x
+    }
+
+    private fun throwNoteNotFoundException(noteId: Int) {
+<span class="fc" id="L185">        var isIdEqual = false</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        for (pair in pairs) {</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">            if (pair.first.id == noteId) isIdEqual = true</span>
+        }
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        if (!isIdEqual) throw NoteNotFoundException(&quot;Р—Р°РјРµС‚РєР° СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+<span class="fc" id="L190">    }</span>
+
+    private fun throwUserNotFoundException(ownerId: Int) {
+<span class="fc" id="L193">        var isOwnerIdEqual = false</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        for (pair in pairs) {</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">            if (pair.first.ownerId == ownerId) isOwnerIdEqual = true</span>
+        }
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (!isOwnerIdEqual) throw UserNotFoundException(&quot;РџРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+<span class="fc" id="L198">    }</span>
+
+    private fun throwNoCommentsException(commentId: Int) {
+<span class="fc" id="L201">        var isCommentIdEqual = false</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        for(i in pairs.indices){</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">            for(j in pairs[i].second.indices) {</span>
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">                if(pairs[i].second[j].cid == commentId) isCommentIdEqual = true</span>
+            }
+        }
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">        if (!isCommentIdEqual) throw NoCommentsException(&quot;РљРѕРјРјРµРЅС‚Р°СЂРёСЏ СЃ С‚Р°РєРёРј id РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚&quot;)</span>
+<span class="nc" id="L208">    }</span>
+
+    //  Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРґР°Р»С‘РЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№.
+    fun restoreComment(commentId: Int, ownerId: Int): Boolean {
+<span class="fc bfc" id="L212" title="All 2 branches covered.">        for(i in deletedComments.indices) {</span>
+<span class="fc bfc" id="L213" title="All 4 branches covered.">            if(deletedComments[i].ownerId == ownerId &amp;&amp; deletedComments[i].cid == commentId){</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">                for(j in pairs.indices){</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">                    if(pairs[i].first.ownerId == ownerId){</span>
+<span class="fc" id="L216">                        pairs[i].second.add(deletedComments[i])</span>
+<span class="fc" id="L217">                        deletedComments.remove(pairs[i].second[j])</span>
+<span class="fc" id="L218">                        return true</span>
                     }
                 }
             }
         }
-<span class="fc" id="L135">        throw GettingCommentsException(&quot;РџРѕРїС‹С‚РєР° РїРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РєРѕРјРјРµС‚Р°СЂРёРµРІ Рє РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ Р·Р°РјРµС‚РєРµ&quot;)</span>
-        return x
+<span class="fc" id="L223">        throwUserNotFoundException(ownerId)</span>
+<span class="nc" id="L224">        throwNoCommentsException(commentId)</span>
+<span class="nc" id="L225">        return false</span>
     }
-//
-//    //  Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРґР°Р»С‘РЅРЅС‹Р№ РєРѕРјРјРµРЅС‚Р°СЂРёР№.
-//    fun restoreComment(commentId: Int, ownerId: Int): Boolean {
-//        TODO(&quot;РЎРѕР·РґР°С‚СЊ С„СѓРЅРєС†РёСЋ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ СѓРґР°Р»С‘РЅРЅРѕРіРѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ Рє Р·Р°РјРµС‚РєРµ.&quot;)
-//        return true
-//    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ru.netology.noteservice.NoteServiceTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2021-05-02T20:09:12" hostname="LENOVO" time="0.257">
+<testsuite name="ru.netology.noteservice.NoteServiceTest" tests="28" skipped="0" failures="0" errors="0" timestamp="2021-05-10T19:48:47" hostname="LENOVO" time="0.909">
   <properties/>
-  <testcase name="createCommentAddingCommentException" classname="ru.netology.noteservice.NoteServiceTest" time="0.239"/>
-  <testcase name="getCommentsShouldThrowGettingCommentsException" classname="ru.netology.noteservice.NoteServiceTest" time="0.002"/>
-  <testcase name="createComment" classname="ru.netology.noteservice.NoteServiceTest" time="0.009"/>
-  <testcase name="getCommentsShouldThrowUserNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
-  <testcase name="addingToEmptyList" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
-  <testcase name="getCommentsShouldThrowNoteNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
+  <testcase name="deleteCommentTrue" classname="ru.netology.noteservice.NoteServiceTest" time="0.215"/>
+  <testcase name="createCommentAddingCommentException" classname="ru.netology.noteservice.NoteServiceTest" time="0.011"/>
+  <testcase name="restoreCommentShouldThrowNoCommentsException" classname="ru.netology.noteservice.NoteServiceTest" time="0.003"/>
+  <testcase name="editShouldThrowAnotherNoteNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.004"/>
+  <testcase name="editCommentShouldThrowNoCommentsException" classname="ru.netology.noteservice.NoteServiceTest" time="0.079"/>
+  <testcase name="editComment" classname="ru.netology.noteservice.NoteServiceTest" time="0.013"/>
+  <testcase name="getCommentsShouldThrowGettingCommentsException" classname="ru.netology.noteservice.NoteServiceTest" time="0.003"/>
+  <testcase name="restoreCommentShouldThrowUserNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.005"/>
+  <testcase name="deleteFalse" classname="ru.netology.noteservice.NoteServiceTest" time="0.002"/>
+  <testcase name="createComment" classname="ru.netology.noteservice.NoteServiceTest" time="0.003"/>
+  <testcase name="getCommentsShouldThrowUserNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.003"/>
+  <testcase name="addingToEmptyList" classname="ru.netology.noteservice.NoteServiceTest" time="0.002"/>
+  <testcase name="getGettingNotesException" classname="ru.netology.noteservice.NoteServiceTest" time="0.429"/>
+  <testcase name="editCommentShouldThrowUserNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.005"/>
+  <testcase name="getById" classname="ru.netology.noteservice.NoteServiceTest" time="0.003"/>
+  <testcase name="getCommentsShouldThrowNoteNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.003"/>
+  <testcase name="get" classname="ru.netology.noteservice.NoteServiceTest" time="0.002"/>
+  <testcase name="edit" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
+  <testcase name="throwNoCommentsException" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
   <testcase name="createCommentToNotEmptyList" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
-  <testcase name="createCommentUserNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
-  <testcase name="getCommentsShouldThrowNoCommentsException" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
+  <testcase name="createCommentUserNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.002"/>
+  <testcase name="restoreComment" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
+  <testcase name="getCommentsShouldThrowNoCommentsException" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
   <testcase name="createCommentNoteNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
-  <testcase name="addingToNotEmptyList" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
-  <testcase name="getComments" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
+  <testcase name="editShouldThrowNoteNotFoundException" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
+  <testcase name="addingToNotEmptyList" classname="ru.netology.noteservice.NoteServiceTest" time="0.001"/>
+  <testcase name="getComments" classname="ru.netology.noteservice.NoteServiceTest" time="0.0"/>
+  <testcase name="deleteTrue" classname="ru.netology.noteservice.NoteServiceTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
